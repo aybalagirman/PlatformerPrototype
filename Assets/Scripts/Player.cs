@@ -4,18 +4,20 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour {
-    private CharacterController _controller;
     [SerializeField]
     private float _speed = 5f;
     [SerializeField]
     private float _gravity = 1f;
     [SerializeField]
     private float _jumpHeight = 15f;
+    [SerializeField]
+    private GameObject _respawnPosition;
     private float _yVelocity = 0;
     private bool _doubleJump = false;
     private int _coins = 0;
     private UIManager _uiManager;
     private int _lives = 3;
+    private CharacterController _controller;
 
     void Start() {
         _controller = GetComponent<CharacterController>();
@@ -30,6 +32,7 @@ public class Player : MonoBehaviour {
 
     void Update() {
         MovePlayer();
+        CheckDeathPoint();
     }
 
     void MovePlayer() {
@@ -53,6 +56,16 @@ public class Player : MonoBehaviour {
 
         velocity.y = _yVelocity;
         _controller.Move(velocity * Time.deltaTime);
+    }
+
+    private void CheckDeathPoint() {
+        Vector3 _checkDeathHeight = this.transform.position;
+
+        if (_checkDeathHeight.y <= - 3.52) {
+            this.transform.position = _respawnPosition.transform.position;
+            Damage();
+        }
+        
     }
 
     public void AddCoins() {
